@@ -46,6 +46,7 @@ var DefaultOpts = Opts{
 	AllowedCameoRootCodes: []string{"13", "14", "15", "17", "18", "19", "20"},
 	SkipDuplicates:        true,
 	SkipFutureEvents:      true,
+	Translingual:          false,
 	MaxTitleLength:        150,
 }
 
@@ -73,6 +74,7 @@ type Opts struct {
 	SkipDuplicates        bool
 	SkipFutureEvents      bool
 	MaxTitleLength        int
+	Translingual          bool
 	AllowedCameoRootCodes []string
 }
 
@@ -82,6 +84,10 @@ func FetchLatestEvents(opts Opts) (_ []*Event, err error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to get latest events from %q: %w", LastUpdateURL, err)
 	}
+	if !opts.Translingual {
+		return filterEvents(a, opts)
+	}
+
 	b, err := getLatestEvents(LastUpdateTranslationURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get latest events from %q: %w", LastUpdateTranslationURL, err)
